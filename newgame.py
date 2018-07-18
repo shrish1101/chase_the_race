@@ -51,6 +51,12 @@ def crash():
 	game_loop()
 
 
+def life_display(life,color):
+	lifefont=pygame.font.SysFont(None,35)
+	lifetext=lifefont.render("Life: "+str(life),True,color)
+	gameDisplay.blit(lifetext,(display_width/2,10))
+
+
 def things_dodged(count,color):
 	font=pygame.font.SysFont(None,35)
 	text=font.render("Dodged: "+str(count),True,color)
@@ -70,6 +76,7 @@ def game_loop():
 
 	dodged=0
 	level=1
+	life=0
 
 	gameExit=False
 
@@ -82,10 +89,18 @@ def game_loop():
 	#for obrstructive moving things
 	thing_width=100
 	thing_height=100
+	thing_speed=8
+	
 	thing_startx=random.randrange(0,display_width-thing_width)
 	thing_starty=-600
-	thing_speed=8
-	thing_count=0
+	
+	
+
+	lifething_width=thing_width
+	lifething_height=thing_height
+	lifething_startx=random.randrange(0,display_width-thing_width)
+	lifething_starty=-750*5;
+
 
 
 	while not gameExit:
@@ -142,11 +157,24 @@ def game_loop():
 
 		x+=x_change
 		thing_starty+=thing_speed
+		lifething_starty+=thing_speed
 
-		#things regernerate	
+		#lifethings regenerate
+		if lifething_starty>display_height:
+			lifething_starty=random.randrange(-600*4,-600*3)
+			lifething_startx=random.randrange(0,display_width-thing_width)
+
+
+		#things regenerate	
 		if thing_starty>display_height:
 			thing_starty=0-thing_height
 			thing_startx=random.randrange(0,display_width-thing_width)
+
+			#to avoid things regenrating on life things
+			if lifething_starty<0 and lifething_starty>(0-thing_height) and thing_startx>(lifething_startx-thing_width) and thing_startx<(lifething_startx+thing_width):
+				thing_starty=-2*thing_width;
+
+			
 			#dodged score
 			dodged+=1
 			#level and color change
@@ -159,17 +187,39 @@ def game_loop():
 				if level>=3:
 					thing_speed+=1#difficulty by speed increase
 
+		
+		#crashed by life things
+		if y<=lifething_starty+lifething_height and y+car_height>=lifething_starty: 
+				# x coordinates crossover
+			if x>=lifething_startx and x<=lifething_startx+lifething_width or x+car_width>=lifething_startx and x+car_width<=lifething_startx+lifething_width or lifething_startx>=x and lifething_startx+lifething_width<=x+car_width:
+				life=life+1
+				#disappear
+				lifething_starty=random.randrange(-600*4,-600*3)
+				lifething_startx=random.randrange(0,display_width-thing_width)
+
 
 		#crashed by walls
 		if x<0 or x+car_width>display_width:
-			crash()
+			if life<=0:
+				crash()
+			else:
+				life=life-1
+				#disappear
+				thing_starty=0-thing_height
+				thing_startx=random.randrange(0,display_width-thing_width)
 
 		#crashed by other cars
 			# y coordinates crossover
 		if y<=thing_starty+thing_height and y+car_height>=thing_starty: 
 				# x coordinates crossover
 			if x>=thing_startx and x<=thing_startx+thing_width or x+car_width>=thing_startx and x+car_width<=thing_startx+thing_width or thing_startx>=x and thing_startx+thing_width<=x+car_width:
-				pass#crash()
+				if life<=0:
+					crash()
+				else:
+					life=life-1
+					#disappear
+					thing_starty=0-thing_height
+					thing_startx=random.randrange(0,display_width-thing_width)
 				
 
 		#new frame starts here
@@ -177,8 +227,10 @@ def game_loop():
 
 		car(x,y)
 		things_dodged(dodged,color)
+		life_display(life,red)
 		game_level(level,color)
-		things(thing_startx,thing_starty,thing_width,thing_height,color)
+		things(thing_startx,thing_starty,thing_width,thing_height,black)
+		things(lifething_startx,lifething_starty,lifething_width,lifething_height,red)
 		
 
 
