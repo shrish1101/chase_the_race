@@ -18,7 +18,7 @@ car_width=65
 car_height=140
 
 gameDisplay=pygame.display.set_mode((display_width,display_height))
-pygame.display.set_caption('CAR CRUNCH')
+pygame.display.set_caption('Chase the Race!')
 clock=pygame.time.Clock()
 
 carImg=pygame.image.load("scarunit.jpg")
