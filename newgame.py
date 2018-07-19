@@ -93,9 +93,9 @@ def game_loop():
 	
 
 	#for obrstructive moving things
-	thing_width=100
-	thing_height=100
-	thing_speed=8
+	thing_width=70
+	thing_height=120
+	thing_speed=10
 	
 	thing_startx=random.randrange(0,display_width-thing_width)
 	thing_starty=-600
@@ -105,12 +105,12 @@ def game_loop():
 	lifething_width=thing_width
 	lifething_height=thing_height
 	lifething_startx=random.randrange(0,display_width-thing_width)
-	lifething_starty=-750*7
+	lifething_starty=-750*12
 
 	greenthing_width=thing_width
 	greenthing_height=thing_height
 	greenthing_startx=random.randrange(0,display_width-thing_width)
-	greenthing_starty=-750*5
+	greenthing_starty=-750*7
 
 
 
@@ -174,13 +174,13 @@ def game_loop():
 
 		#lifethings regenerate
 		if lifething_starty>display_height:
-			lifething_starty=random.randrange(-600*6,-600*5)
+			lifething_starty=random.randrange(-16*display_height,-12*display_height)
 			lifething_startx=random.randrange(0,display_width-thing_width)
 
 
 		#greenthings regenerate
 		if greenthing_starty>display_height:
-			greenthing_starty=random.randrange(-600*7,-600*6)
+			greenthing_starty=random.randrange(-14*display_height,-10*display_height)
 			greenthing_startx=random.randrange(0,display_width-thing_width)
 
 
